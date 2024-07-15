@@ -48,9 +48,14 @@ async function run() {
 
         app.post('/users/pending', async(req, res)=> {
             const usersData = req.body
+            const {userName, email, phone, } = usersData
+
             const salt = await bcrypt.genSalt(10)
             const securePin = await bcrypt.hash(usersData.pin, salt)
-            console.log(securePin)
+
+            const securedData = {
+                usersData.userName,
+            }
             const result = await pendingUsersCollection.insertOne(usersData)
             res.send(result)
         })
