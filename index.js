@@ -46,17 +46,43 @@ async function run() {
         const pendingUsersCollection = client.db('MobiPay').collection('pendingUsers')
 
 
-        app.post('/users/pending', async(req, res)=> {
+
+        app.post('/users', async (req, res) => {
             const usersData = req.body
-            const {userName, email, phone, } = usersData
+            const { userName, email, phone, role, status } = usersData
 
             const salt = await bcrypt.genSalt(10)
-            const securePin = await bcrypt.hash(usersData.pin, salt)
+            const securedPin = await bcrypt.hash(usersData.pin, salt)
 
             const securedData = {
-                usersData.userName,
+                userName,
+                email,
+                phone,
+                role,
+                securedPin,
+                status
             }
-            const result = await pendingUsersCollection.insertOne(usersData)
+            console.log(securedData)
+
+            const result = await usersCollection.insertOne(securedData)
+            res.send(result)
+        })
+
+
+        
+        app.get('/users/:email', async (req, res) => {
+            const userEmail = req.params.email
+            console.log(userEmail)
+            const query = { email: userEmail }
+            const result = await usersCollection.findOne(query)
+            res.send(result)
+        })
+
+        app.get('/users/pending/:email', async (req, res) => {
+            const userEmail = req.params.email
+            console.log(userEmail)
+            const query = { email: userEmail }
+            result = await usersCollection.findOne(query)
             res.send(result)
         })
 
