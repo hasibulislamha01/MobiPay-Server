@@ -69,20 +69,32 @@ async function run() {
         })
 
 
-        
+
         app.get('/users/:email', async (req, res) => {
-            const userEmail = req.params.email
-            console.log(userEmail)
+            const userEmail = req?.params?.email
+            console.log('line 75', userEmail)
             const query = { email: userEmail }
             const result = await usersCollection.findOne(query)
-            res.send(result)
+            res.status(200).send(result)
         })
 
-        app.get('/users/pending/:email', async (req, res) => {
-            const userEmail = req.params.email
-            console.log(userEmail)
-            const query = { email: userEmail }
-            result = await usersCollection.findOne(query)
+        app.patch('/users/:email', async (req, res) => {
+            const userEmail = req?.params?.email
+            const filter = { email: userEmail }
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    status: `approved`
+                },
+            };
+            const result = await usersCollection.updateOne(filter, updateDoc, options);
+            res.status(200).send(result)
+        })
+
+        app.get('/pendingUsers', async (req, res) => {
+            // res.send('rote is hitting')
+            const query = { status: 'pending' }
+            const result = await usersCollection.find(query).toArray()
             res.send(result)
         })
 
