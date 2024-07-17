@@ -82,12 +82,21 @@ async function run() {
             const userEmail = req?.params?.email
             const filter = { email: userEmail }
             const options = { upsert: true };
-            const updateDoc = {
+            const updateDocUser = {
                 $set: {
-                    status: `approved`
+                    status: `approved`, 
+                    balance: '40'
+
                 },
             };
-            const result = await usersCollection.updateOne(filter, updateDoc, options);
+            // const updateDocAgent = {
+            //     $set: {
+            //         status: `approved`, 
+            //         balance: '40'
+
+            //     },
+            // };
+            const result = await usersCollection.updateOne(filter, updateDocUser, options);
             res.status(200).send(result)
         })
 
