@@ -78,7 +78,7 @@ async function run() {
             res.status(200).send(result)
         })
 
-        app.patch('/users/:email', async (req, res) => {
+        app.patch('/users/user/:email', async (req, res) => {
             const userEmail = req?.params?.email
             const filter = { email: userEmail }
             const options = { upsert: true };
@@ -89,14 +89,26 @@ async function run() {
 
                 },
             };
-            // const updateDocAgent = {
-            //     $set: {
-            //         status: `approved`, 
-            //         balance: '40'
-
-            //     },
-            // };
+            
             const result = await usersCollection.updateOne(filter, updateDocUser, options);
+            res.status(200).send(result)
+        })
+
+
+
+        app.patch('/users/agent/:email', async (req, res) => {
+            const userEmail = req?.params?.email
+            const filter = { email: userEmail }
+            const options = { upsert: true };
+            
+            const updateDocAgent = {
+                $set: {
+                    status: `approved`, 
+                    balance: '10000'
+
+                },
+            };
+            const result = await usersCollection.updateOne(filter, updateDocAgent, options);
             res.status(200).send(result)
         })
 
